@@ -7,16 +7,16 @@ import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
-import { CustomerModule } from './app/customer.module';
+import { OrderModule } from './order/order.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(CustomerModule);
+  const app = await NestFactory.create(OrderModule);
 
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.RMQ,
     options: {
       urls: ['amqp://localhost:5672'],
-      queue: 'customer_queue',
+      queue: 'order_queue',
       // noAck: false,
       queueOptions: {
         durable: false,
@@ -26,7 +26,7 @@ async function bootstrap() {
 
   const globalPrefix = '';
   app.setGlobalPrefix(globalPrefix);
-  const port = process.env.PORT || 8000;
+  const port = process.env.PORT || 8001;
 
   await app.startAllMicroservices();
   await app.listen(port);
