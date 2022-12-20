@@ -5,6 +5,7 @@ import { OrderHttpController } from './order.http.controller';
 import { OrderMqController } from './order.mq.controller';
 import { CustomerMqService } from './customer.mq.service';
 import { OrderModelService } from './order.model.service';
+import { CustomerHttpService } from './customer.http.service';
 
 @Module({
   imports: [
@@ -24,6 +25,6 @@ import { OrderModelService } from './order.model.service';
   ],
 
   controllers: [OrderHttpController, OrderMqController],
-  providers: [CustomerMqService, OrderModelService],
+  providers: [CustomerMqService, OrderModelService, CustomerHttpService],
 })
 export class OrderModule {}

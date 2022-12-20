@@ -5,16 +5,8 @@ import { ClientProxy } from '@nestjs/microservices';
 export class CustomerMqService {
   constructor(@Inject('CUSTOMER_SERVICE') private client: ClientProxy) {}
 
-  async getHello() {
-    return this.client.send({ cmd: 'greeting' }, 'Progressive Coder');
-  }
-
-  async getHelloAsync() {
-    const message = await this.client.send(
-      { cmd: 'greeting-async' },
-      'Progressive Coder'
-    );
-    return message;
+  async sendCommand(command: string, data: any) {
+    return this.client.send({ cmd: command }, data);
   }
 
   async publishEvent(eventName: string, data: any) {

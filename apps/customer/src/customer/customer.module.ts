@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { CustomerHttpController } from './customer.http.controller';
+import { CustomerModelService } from './customer.model.service';
 
 import { CustomerMqController } from './customer.mq.controller';
 import { OrderMqService } from './order.mq.service';
@@ -20,7 +22,7 @@ import { OrderMqService } from './order.mq.service';
       },
     ]),
   ],
-  controllers: [CustomerMqController],
-  providers: [OrderMqService],
+  controllers: [CustomerMqController, CustomerHttpController],
+  providers: [OrderMqService, CustomerModelService],
 })
 export class CustomerModule {}

@@ -1,31 +1,29 @@
+import * as chalk from 'chalk';
 import { Controller } from '@nestjs/common';
 import { EventPattern } from '@nestjs/microservices';
-import { CustomerMqService } from './customer.mq.service';
+import { OrderModelService } from './order.model.service';
 
 @Controller()
 export class OrderMqController {
-  constructor(private readonly customerMqService: CustomerMqService) {}
-  private orders = [];
+  constructor(private readonly orderModelService: OrderModelService) {}
 
-  @EventPattern('purchase-intent-created')
-  async handleOrderCreatedEvent(data: Record<string, unknown>) {
-    console.log('A new purchase intent received', data);
+  @EventPattern('payment-approved')
+  async confirmOrder(data: { order: string }) {
+    console.log(chalk.greenBright(`MQ: A payment approved event received`));
+    this.orderModelService.confirm(data.order);
+    console.log(
+      `Set the order id ${data.order} to ${chalk.greenBright('CONFIRMED')}`
+    );
+  }
 
-    const newOrderId =
-      this.orders.length > 0
-        ? Math.max.apply(
-            null,
-            this.orders.map((order) => order.id)
-          )
-        : 1;
-
-    this.orders.push({ id: newOrderId, items: data });
-
-    console.log('All orders', this.orders);
-
-    return this.customerMqService.publishEvent('order-created', {
-      orderId: 1,
-      items: ['apple', 'banana', 'cherry'],
-    });
+  @EventPattern('payment-failed')
+  async rejectOrder(data: { order: string; message: string }) {
+    console.log(
+      chalk.yellowBright(
+        `MQ: A payment-failed event received. Reason: ${data.message}`
+      )
+    );
+    this.orderModelService.delete(data.order);
+    console.log(chalk.redBright(`Removed order ${data.order}`));
   }
 }

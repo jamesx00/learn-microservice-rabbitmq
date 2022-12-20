@@ -7,7 +7,7 @@ import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
-import { CustomerModule } from './app/customer.module';
+import { CustomerModule } from './customer/customer.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(CustomerModule);
